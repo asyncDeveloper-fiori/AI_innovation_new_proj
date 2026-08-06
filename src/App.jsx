@@ -15,6 +15,12 @@ import LandingPage from './LandingPage'
 import PipelineTracker from './PipelineTracker'
 import './index.css'
 
+const API_BASE = import.meta.env.VITE_API_URL || (
+  typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8000'
+    : ''
+)
+
 /* ════════════════════════════════════════════
    FRAMER VARIANTS
    ════════════════════════════════════════════ */
@@ -197,7 +203,7 @@ export default function App() {
   /* ── SSE stream ──────────────────────── */
   useEffect(() => {
     if (!sessionId) return
-    const es = new EventSource(`http://localhost:8000/stream/${sessionId}`)
+    const es = new EventSource(`${API_BASE}/stream/${sessionId}`)
     es.addEventListener('log', (e) => {
       const log = JSON.parse(e.data)
       log.timestamp = new Date().toLocaleTimeString()
@@ -238,7 +244,7 @@ export default function App() {
     const timer = setTimeout(() => controller.abort(), 15000)
 
     try {
-      const res = await fetch('http://localhost:8000/upload', {
+      const res = await fetch(`${API_BASE}/upload`, {
         method: 'POST', body: fd, signal: controller.signal
       })
       clearTimeout(timer)
@@ -251,8 +257,8 @@ export default function App() {
       clearTimeout(timer)
       console.error('Upload failed:', err)
       const msg = err.name === 'AbortError'
-        ? 'Upload timed out. Make sure the backend is running on port 8000.'
-        : err.message || 'Upload failed. Is the backend running on port 8000?'
+        ? 'Upload timed out. Make sure the backend server is responding.'
+        : err.message || 'Upload failed. Could not reach backend server.'
       setUploadError(msg)
       setStatus('idle')
     }
@@ -260,7 +266,7 @@ export default function App() {
 
   const fixAllAI = async (errorType) => {
     try {
-      const res = await fetch(`http://localhost:8000/fix/ai/${sessionId}`, {
+      const res = await fetch(`${API_BASE}/fix/ai/${sessionId}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ error_type: errorType })
       })
@@ -275,7 +281,7 @@ export default function App() {
     setModalOpen(true)
     if (record.error_msg?.toLowerCase().includes('master data')) {
       try {
-        const res  = await fetch(`http://localhost:8000/master-data/${record.error_field.toLowerCase()}`)
+        const res  = await fetch(`${API_BASE}/master-data/${record.error_field.toLowerCase()}`)
         const data = await res.json()
         setMasterDataOptions(data.values)
         if (data.values?.length > 0) setEditValue(data.values[0])
@@ -285,7 +291,7 @@ export default function App() {
 
   const submitManualFix = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/fix/manual/${sessionId}`, {
+      const res = await fetch(`${API_BASE}/fix/manual/${sessionId}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ record_id: currentEditRecord.id, field: currentEditRecord.error_field, new_value: editValue })
       })
