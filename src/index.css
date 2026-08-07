@@ -9,10 +9,10 @@
   --bg-base:       #060d1f;
 
   /* ── Transparent surfaces (background shows through) ── */
-  --bg-surface:    rgba(4, 8, 20, 0.22);
-  --bg-elevated:   rgba(5, 10, 28, 0.45);
-  --bg-card:       rgba(4, 8, 20, 0.18);
-  --bg-tab-bar:    rgba(3, 6, 16, 0.50);
+  --bg-surface:    rgba(4, 8, 20, 0.15);
+  --bg-elevated:   rgba(5, 10, 28, 0.25);
+  --bg-card:       rgba(4, 8, 20, 0.15);
+  --bg-tab-bar:    rgba(3, 6, 16, 0.22);
 
   /* Brand */
   --neon-blue:    #3b82f6;
@@ -35,9 +35,9 @@
   --text-code: #60a5fa;
 
   /* Glass */
-  --glass-blur:    18px;
-  --glass-border:  rgba(59,130,246,0.11);
-  --glass-border-h:rgba(59,130,246,0.35);
+  --glass-blur:    0px;
+  --glass-border:  rgba(59,130,246,0.22);
+  --glass-border-h:rgba(59,130,246,0.50);
 
   /* Shadows */
   --shadow-panel: 0 8px 40px rgba(0,0,0,0.55), 0 1px 0 rgba(59,130,246,0.06) inset;
@@ -359,11 +359,11 @@ body::after{
   z-index:20;
   margin-bottom:var(--s6);
   padding:var(--s4) var(--s6);
-  background:rgba(4,8,20,0.25);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(59,130,246,0.18);
+  background:rgba(6,13,31,0.04);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:1px solid rgba(59,130,246,0.22);
   border-radius:var(--r-lg);
-  box-shadow:0 8px 40px rgba(0,0,0,0.35),inset 0 1px 0 rgba(59,130,246,0.12);
+  box-shadow:0 4px 24px rgba(0,0,0,0.2),inset 0 1px 0 rgba(59,130,246,0.15);
   overflow:hidden;
 }
 
@@ -421,10 +421,10 @@ body::after{
   position:sticky;top:var(--s3);z-index:100;
   display:flex;justify-content:space-between;align-items:center;
   padding:var(--s3) var(--s5);margin-bottom:var(--s6);
-  background:rgba(4,8,20,0.30);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  background:rgba(6,13,31,0.05);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
   border:1px solid var(--glass-border);border-radius:var(--r-xl);
-  box-shadow:var(--shadow-panel);
+  box-shadow:0 4px 24px rgba(0,0,0,0.25),inset 0 1px 0 rgba(59,130,246,0.15);
 }
 
 /* Animated shimmer border */
@@ -520,26 +520,26 @@ button:focus-visible{outline:2px solid var(--neon-blue);outline-offset:2px;}
 .btn-save:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(30,64,175,0.4);}
 
 /* ── Glass Panel ── two variants ──────────────────── */
-/* Default: very light tint for KPI cards */
+/* Default: crystal clear sheer glass for KPI cards */
 .glass-panel{
-  background:rgba(4,8,20,0.10);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:rgba(6,13,31,0.03);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
   border:1px solid var(--glass-border);border-radius:var(--r-lg);
-  padding:var(--s5);box-shadow:var(--shadow-panel);
+  padding:var(--s5);box-shadow:0 4px 20px rgba(0,0,0,0.2),inset 0 1px 0 rgba(59,130,246,0.1);
   position:relative;overflow:hidden;
   transition:border-color 0.3s var(--ease-smooth),box-shadow 0.3s var(--ease-smooth);
 }
 .glass-panel::before{
   content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent 0%,rgba(59,130,246,0.35) 30%,rgba(6,182,212,0.25) 60%,transparent 100%);
+  background:linear-gradient(90deg,transparent 0%,rgba(59,130,246,0.45) 30%,rgba(6,182,212,0.35) 60%,transparent 100%);
 }
 
-/* Main content panel (tabs + upload + logs) — translucent background */
+/* Main content panel (tabs + upload + logs) — crystal clear see-through background */
 .glass-panel.main-panel{
-  background:rgba(4,8,20,0.12);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(59,130,246,0.14);
-  box-shadow:0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(59,130,246,0.08);
+  background:rgba(6,13,31,0.02);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:1px solid rgba(59,130,246,0.18);
+  box-shadow:0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(59,130,246,0.1);
 }
 
 /* ── KPI Grid ─────────────────────────────────────── */
@@ -644,8 +644,8 @@ button:focus-visible{outline:2px solid var(--neon-blue);outline-offset:2px;}
   display:grid;grid-template-columns:62px 128px 1fr;align-items:start;
   gap:var(--s3);padding:var(--s3) var(--s4);
   border-left:2px solid var(--glass-border);
-  background:rgba(4,8,20,0.18);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  background:rgba(6,13,31,0.03);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
   border-radius:0 var(--r-sm) var(--r-sm) 0;transition:background 0.15s ease;
 }
 .log-entry:hover{background:rgba(4,8,20,0.35);}
