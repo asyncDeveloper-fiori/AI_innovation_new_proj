@@ -6,7 +6,7 @@ import {
 import {
   Activity, AlertTriangle, CheckCircle, FileX, BarChart2,
   Upload, Database, Zap, ShieldCheck, Save, TrendingUp,
-  AlertCircle, ServerCrash, ChevronLeft
+  AlertCircle, ServerCrash, ChevronLeft, Download
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { gsap } from 'gsap'
@@ -231,6 +231,11 @@ export default function App() {
     }
   }
 
+  const handleDownloadFixedExcel = () => {
+    if (!sessionId) return
+    window.open(`${API_BASE}/export/${sessionId}`, '_blank')
+  }
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -248,9 +253,15 @@ export default function App() {
         method: 'POST', body: fd, signal: controller.signal
       })
       clearTimeout(timer)
-      if (!res.ok) throw new Error(`Server error: ${res.status}`)
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.detail || `Upload Blocked: Server error ${res.status}`)
+      }
       const data = await res.json()
       setSessionId(data.session_id)
+      if (data.records) setRecords(data.records)
+      if (data.kpis)    setKpis(data.kpis)
+      if (data.logs)    setLogs(data.logs)
       setStatus('processing')
       setActiveTab('logs')
     } catch (err) {
@@ -423,6 +434,19 @@ export default function App() {
                       </motion.div>
                     )}
                   </AnimatePresence>
+                  {sessionId && records.length > 0 && (
+                    <motion.button className="btn-primary" onClick={handleDownloadFixedExcel}
+                      whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }} aria-label="Download Fixed Excel File"
+                      style={{
+                        background: 'linear-gradient(135deg, #15803d 0%, #16a34a 60%, #059669 100%)',
+                        borderColor: '#4ade8059',
+                        boxShadow: '0 4px 20px rgba(22, 163, 74, 0.45)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Download size={15} /> Download Fixed Excel
+                    </motion.button>
+                  )}
                   {status === 'idle' && (
                     <motion.button className="btn-primary" onClick={handleUploadClick}
                       whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }} aria-label="Upload Excel or CSV file"
@@ -460,8 +484,9 @@ export default function App() {
               {/* Main Panel */}
               <div className="glass-panel main-panel" ref={mainRef}>
 
-                {/* Pill Tabs */}
-                <div className="tabs-wrapper" ref={tabsWrapRef} role="tablist">
+                {/* Pill Tabs & Action Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 'var(--s5)' }}>
+                  <div className="tabs-wrapper" ref={tabsWrapRef} role="tablist" style={{ marginBottom: 0, flex: 1 }}>
                   <motion.div className="tab-slider" animate={sliderStyle}
                     transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} />
                   {TABS.map(t => (
@@ -480,6 +505,7 @@ export default function App() {
                     </button>
                   ))}
                 </div>
+              </div>
 
                 {/* Tab content */}
                 <AnimatePresence mode="wait">
